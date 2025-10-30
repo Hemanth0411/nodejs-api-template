@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon -L src/index.js"
+    "dev": "nodemon -L src/index.js",
+    "generate-licenses": "npx license-checker --production --markdown --out 3RD-PARTY-LICENSES.md"
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,7 @@
     "express": "^5.1.0"
   },
   "devDependencies": {
+    "license-checker": "^25.0.1",
     "nodemon": "^3.1.10"
   }
 }
