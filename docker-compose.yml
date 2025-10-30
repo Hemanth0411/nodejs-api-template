@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      target: build # Use the 'build' stage for development to have all files
+    container_name: nodejs-api-template
+    ports:
+      - "3000:3000"
+    volumes:
+      # Mount the source code directory for live-reloading
+      - ./src:/usr/src/app/src
+    # Override the Dockerfile's CMD for development
+    # Use nodemon to watch for changes
+    command: npm run dev
