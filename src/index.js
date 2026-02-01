@@ -4,9 +4,12 @@ const express = require('express');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
 const welcomeRoutes = require('./routes/welcomeRoutes');
+const loggingMiddleware = require('./middleware/logging');
 
 const app = express();
 const PORT = env.PORT;
+
+app.use(loggingMiddleware);
 
 // --- Swagger Configuration ---
 const swaggerOptions = {
