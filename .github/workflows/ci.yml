@@ -1,37 +1,41 @@
 name: CI/CD Pipeline
-
 on:
   pull_request:
     branches: [ main ]
   push:
     branches: [ main ]
-
 jobs:
-  validate:
-    name: Validate PR
-    # This job only runs on pull requests
-    if: github.event_name == 'pull_request'
+  quality-gate:
+    name: Lint and Test
     runs-on: ubuntu-latest
-
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
-
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'npm'
-
       - name: Install dependencies
         run: npm ci
+      - name: Run Linter
+        run: npm run lint
+      - name: Run Tests
+        # We must provide dummy env vars because of our "Zero-Fallback" config
+        env:
+          NODE_ENV: test
+          PORT: 3000
+          CORS_ORIGIN: "*"
+          RATE_LIMIT_WINDOW_MS: 900000
+          RATE_LIMIT_MAX: 100
+        run: npm test
 
       - name: Build Docker image
         run: docker build . --file Dockerfile --target build
 
   build-and-push:
     name: Build and Push to Docker Hub
-    # This job only runs on merges/pushes to main
+    needs: quality-gate
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
 
