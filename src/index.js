@@ -1,10 +1,12 @@
+const env = require('./config/env');
+
 const express = require('express');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
 const welcomeRoutes = require('./routes/welcomeRoutes');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = env.PORT;
 
 // --- Swagger Configuration ---
 const swaggerOptions = {
