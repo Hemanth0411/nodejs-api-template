@@ -1,103 +1,208 @@
-# Production-Ready Node.js REST API Template
+# 🚀 Production-Ready Node.js REST API Template
 
 [![CI/CD Pipeline](https://github.com/Hemanth0411/nodejs-api-template/actions/workflows/ci.yml/badge.svg)](https://github.com/Hemanth0411/nodejs-api-template/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js Version](https://img.shields.io/badge/node-v20+-green.svg)](https://nodejs.org/)
 
-This repository is a production-ready template designed for any developer who needs a reliable and professional starting point for building REST APIs with Node.js. The primary goal is to provide a solid, best-practice foundation that saves you time on setup and configuration, allowing you to focus directly on your application's logic.
-
----
-
-## Core Features
-
--   **Node.js & Express:** A fast, scalable, and widely-used backend foundation.
--   **Docker & Docker Compose:** Fully containerized for consistent development and production environments.
--   **CI/CD Automation:** A ready-to-use GitHub Actions pipeline that automatically builds and pushes the Docker image to Docker Hub on every merge to `main`.
--   **Live-Reload Development:** The local development environment uses `nodemon` for instant server restarts on code changes, speeding up the feedback loop.
--   **Interactive API Documentation:** Automatically generated, interactive API documentation powered by Swagger (OpenAPI) and served at the `/api-docs` endpoint.
--   **Security & Optimization:** The multi-stage `Dockerfile` creates a small, optimized production image and runs the application as a non-root user for improved security.
--   **Legal Compliance:** Ships with an MIT License and includes a tool (`license-checker`) to automatically generate a `3RD-PARTY-LICENSES.md` file.
+A **senior-adjacent, production-ready blueprint** for building enterprise-grade REST APIs with Node.js and Express. This template implements real-world patterns: Layered Architecture, strict environment validation, structured logging, and automated quality enforcement.
 
 ---
 
-## Getting Started (Local Development)
+## 📋 Table of Contents
+
+- [Why This Template?](#-why-this-template)
+- [Key Features](#-key-features)
+- [Architecture & Design Decisions](#-architecture--design-decisions)
+- [Project Structure](#-project-structure)
+- [Getting Started](#-getting-started)
+- [Development Workflow](#-development-workflow)
+- [CI/CD Pipeline](#-cicd-pipeline)
+- [Configuration](#-configuration)
+- [Security Hardening](#-security-hardening)
+- [Testing Strategy](#-testing-strategy)
+- [Troubleshooting](#-troubleshooting)
+- [License](#-license)
+
+---
+
+## 🎯 Why This Template?
+
+### The Problem
+Most Node.js tutorials result in a "spaghetti" `index.js` that:
+- Fails silently when environment variables are missing.
+- Is impossible to debug due to unstructured `console.log` statements.
+- Has no protection against brute-force or common web vulnerabilities.
+- Lacks a repeatable structure for team scale.
+
+### The Solution
+This template addresses **Day 2 operational concerns** from Day 1:
+
+| Challenge | Solution in This Template | Advantage |
+|-----------|--------------------------|-----------|
+| **Misconfiguration** | Zod Environment Validation | App crashes instantly with a clear error if `.env` is invalid. |
+| **Observability** | Pino Structured Logging | Logs are JSON-formatted for ELK/Datadog and include Trace IDs. |
+| **Spaghetti Code** | Layered Architecture | Separation of Routes, Controllers, and Services for high testability. |
+| **Security** | Helmet + Rate Limiting | Out-of-the-box protection against common OWASP vulnerabilities. |
+| **Consistency** | ESLint (Airbnb) + Prettier | Enforces a strict, professional coding standard automatically. |
+
+---
+
+## 🚀 Key Features
+
+- **Layered Clean Architecture**: Strict separation of concerns.
+- **API Versioning**: Built-in `/api/v1/` structure for future-proofing.
+- **Fast, Structured Logging**: Pino-powered logs with automatic Correlaton IDs.
+- **Fail-Fast Configuration**: Strict environment validation with Zod.
+- **Security First**: Pre-configured Helmet headers, CORS policies, and Rate Limiting.
+- **Automated Quality**: GitHub Actions pipeline for Linting, Testing, and Docker builds.
+- **Self-Documenting**: Swagger/OpenAPI documentation decoupled from code.
+
+---
+
+## 🏛️ Architecture & Design Decisions
+
+### 1. Layered Architecture
+We separate the app into distinct layers to ensure that business logic is never coupled to the transport (HTTP) layer.
+
+```
+┌─────────────────────────────────────┐
+│   Routes (Express Router)          │  ← Path Definitions
+├─────────────────────────────────────┤
+│   Controllers (Request Handlers)   │  ← HTTP Logic (Status codes, Parsing)
+├─────────────────────────────────────┤
+│   Services (Business Logic)        │  ← The "Work" (Pure JS logic)
+├─────────────────────────────────────┤
+│   Schemas (Zod Models)             │  ← Data Validation
+└─────────────────────────────────────┘
+```
+
+### 2. Zero-Fallback Configuration
+**Decision**: We use Zod to validate `process.env`. If a variable like `PORT` or `CORS_ORIGIN` is missing, the app refuses to start.
+**Result**: No more "Why is my app running on port 3000 instead of 8080?" mysteries.
+
+### 3. Decoupled Documentation
+**Decision**: Swagger definitions are kept in `src/docs/*.yaml` instead of code comments.
+**Result**: Keeps route files clean and allows the API contract to be easily shared with frontend teams.
+
+---
+
+## 📁 Project Structure
+
+```
+nodejs-api-template/
+├── .github/workflows/   # CI/CD Pipeline
+├── src/
+│   ├── config/          # Env validation and global config
+│   ├── controllers/     # Request handlers
+│   ├── docs/            # OpenAPI/Swagger YAML specs
+│   ├── middleware/      # Logging, Security, and Error handlers
+│   ├── routes/          # API Route definitions (v1/v2)
+│   ├── schemas/         # Zod validation schemas
+│   ├── services/        # Business logic
+│   ├── utils/           # Shared utilities (Logger)
+│   ├── app.js           # Express app initialization (for testing)
+│   └── index.js         # Server entry point (app.listen)
+├── tests/               # Jest integration tests
+├── .env.example         # Template for local environment
+├── Dockerfile           # Multi-stage production build
+└── package.json         # Dependency management
+```
+
+---
+
+## 🏁 Getting Started
 
 ### Prerequisites
-
--   [Docker](https://www.docker.com/products/docker-desktop/)
--   [Node.js](https://nodejs.org/) (for package management)
--   Git
+- Node.js 20+
+- npm 9+
 
 ### Setup
+1. **Clone and Install**:
+   ```bash
+   git clone https://github.com/Hemanth0411/nodejs-api-template.git
+   cd nodejs-api-template
+   npm install
+   ```
+2. **Configure Environment**:
+   ```bash
+   cp .env.example .env
+   # Edit .env with your settings
+   ```
+3. **Run Development**:
+   ```bash
+   npm run dev
+   ```
 
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/Hemanth0411/nodejs-api-template.git
-    cd nodejs-api-template
-    ```
-
-2.  **Install dependencies (optional, for IDE support):**
-    ```bash
-    npm install
-    ```
-
-3.  **Run the application using Docker Compose:**
-    This command will build the Docker image and start the container. The API will be available at `http://localhost:3000`.
-    ```bash
-    docker-compose up --build
-    ```
-
----
-
-## Deployment
-
-This application can be deployed in multiple ways, depending on your infrastructure.
-
-### Method 1: Using the Docker Image (Recommended for Production)
-
-The CI/CD pipeline automatically pushes a tagged image to Docker Hub. You can pull this image and run it on any server or cloud platform that supports Docker.
-
-1.  **Pull the image from Docker Hub:**
-    ```bash
-    docker pull hemanth0411/nodejs-api-template:latest
-    ```
-
-2.  **Run the container:**
-    This command starts the container, maps port 80 on the host to port 3000 in the container, and runs it in detached mode.
-    ```bash
-    docker run -d -p 80:3000 --name my-api-instance hemanth0411/nodejs-api-template:latest
-    ```
-
-### Method 2: Running with Node.js (Without Docker)
-
-This method is suitable for environments where Docker is not available or for simpler use cases.
-
-1.  **Clone the repository on your server:**
-    ```bash
-    git clone https://github.com/Hemanth0411/nodejs-api-template.git
-    cd nodejs-api-template
-    ```
-
-2.  **Install production dependencies:**
-    ```bash
-    npm ci --omit=dev
-    ```
-
-3.  **Start the server:**
-    It is highly recommended to use a process manager like `pm2` to handle restarts and logging in production.
-    ```bash
-    # Example using pm2
-    npm install -g pm2
-    pm2 start src/index.js --name "nodejs-api"
-    ```
+**Access Points:**
+- **API Root**: `http://localhost:3000/api/v1`
+- **Interactive Docs**: `http://localhost:3000/api-docs`
 
 ---
 
-## How to Use This Template
+## 💻 Development Workflow
 
-This project is designed to be the base for your own application.
+### Testing
+```bash
+# Run all tests
+npm test
 
-1.  Click the **"Use this template"** button on the GitHub repository page.
-2.  Give your new repository a name.
-3.  Clone your new repository to your local machine.
-4.  Update the `README.md` and `package.json` files with your project's specific information.
-5.  Configure your own `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` secrets in your new repository's settings to enable the CI/CD pipeline.
-6.  Start building your API!
+# Run tests in watch mode
+npm run test:watch
+```
+
+### Linting & Formatting
+```bash
+# Check for issues
+npm run lint
+
+# Automatically fix most issues
+npm run lint:fix
+
+# Format code with Prettier
+npm run format
+```
+
+---
+
+## 🤖 CI/CD Pipeline
+
+The template includes a GitHub Action (`ci.yml`) that performs three critical checks on every PR:
+1. **Linting**: Blocks PRs that don't match the Airbnb style guide.
+2. **Testing**: Runs the Jest suite.
+3. **Docker Build**: Verifies the production Dockerfile is valid.
+
+---
+
+## 🛡️ Security Hardening
+
+- **Helmet**: Sets secure HTTP headers to prevent XSS and Clickjacking.
+- **Rate Limiting**: Protects against DoS by limiting IPs to 100 requests per 15 minutes (configurable).
+- **CORS**: Strict origin whitelist via environment variables.
+- **Non-Root Docker**: Container runs as an unprivileged user for security isolation.
+
+---
+
+## 🔧 Troubleshooting
+
+### 1. "Invalid environment variables" on startup
+**Cause**: You missed a variable in your `.env` file.
+**Solution**: Check the error message in your terminal and update `.env` to match `.env.example`.
+
+### 2. "Module not found" error
+**Cause**: Usually occurs after moving files or adding new dependencies.
+**Solution**: Ensure you ran `npm install` and check relative paths (e.g., `../../`).
+
+### 3. Tests fail on "Connection Refused"
+**Cause**: Trying to run tests against a live server instead of the exported `app`.
+**Solution**: Ensure your test file imports `app` from `src/app.js` and uses `supertest(app)`.
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+All third-party dependency licenses are listed in [3RD-PARTY-LICENSES.md](3RD-PARTY-LICENSES.md).
+
+---
+
+**Made with ❤️ for production-ready Node.js APIs**
