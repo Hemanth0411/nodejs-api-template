@@ -1,7 +1,5 @@
-const getWelcomeMessage = () => {
-    return 'Hello, World!';
-};
+const getWelcomeMessage = () => 'Hello, World!';
 
 module.exports = {
-    getWelcomeMessage,
+  getWelcomeMessage,
 };

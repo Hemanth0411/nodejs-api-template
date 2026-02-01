@@ -1,0 +1,5 @@
+node_modules
+dist
+coverage
+.env
+3RD-PARTY-LICENSES.md
