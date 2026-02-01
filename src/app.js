@@ -8,6 +8,7 @@ const swaggerJsdoc = require('swagger-jsdoc');
 const loggingMiddleware = require('./middleware/logging');
 const env = require('./config/env');
 const welcomeRoutes = require('./routes/welcomeRoutes');
+const itemRoutes = require('./routes/itemRoutes');
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use(express.json());
 
 // Routes
 app.use('/', welcomeRoutes);
+app.use('/items', itemRoutes);
 
 // Swagger
 const swaggerOptions = {

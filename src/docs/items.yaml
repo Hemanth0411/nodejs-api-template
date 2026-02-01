@@ -1,0 +1,70 @@
+/items:
+  get:
+    summary: List all items
+    tags: [Items]
+    responses:
+      200:
+        description: A list of items
+  post:
+    summary: Create a new item
+    tags: [Items]
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [name]
+            properties:
+              name: { type: string }
+              description: { type: string }
+    responses:
+      201:
+        description: Created
+/items/{id}:
+  get:
+    summary: Get item by ID
+    tags: [Items]
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema: { type: integer }
+    responses:
+      200: { description: OK }
+      404: { description: Not Found }
+  put:
+    summary: Update an item
+    tags: [Items]
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema: { type: integer }
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [name]
+            properties:
+              name: { type: string }
+              description: { type: string }
+    responses:
+      200:
+        description: Updated
+      400:
+        description: Validation Error
+      404:
+        description: Not Found
+  delete:
+    summary: Delete an item
+    tags: [Items]
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema: { type: integer }
+    responses:
+      204: { description: No Content }
