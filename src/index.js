@@ -1,6 +1,7 @@
 const express = require('express');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
+const welcomeRoutes = require('./routes/welcomeRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -25,32 +26,15 @@ const swaggerOptions = {
       },
     ],
   },
-  // Path to the API docs
-  apis: ['./src/index.js'], // This can be changed to look for route files
+  apis: ['./src/docs/*.yaml'],
 };
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-// --- End Swagger Configuration ---
 
-/**
- * @swagger
- * /:
- *   get:
- *     summary: Returns a welcome message.
- *     description: This is the root endpoint of the API which returns a simple greeting.
- *     responses:
- *       200:
- *         description: A successful response.
- *         content:
- *           text/plain:
- *             schema:
- *               type: string
- *               example: Hello, World!
- */
-app.get('/', (req, res) => {
-  res.send('Hello, World!');
-});
+app.use(express.json());
+
+app.use('/', welcomeRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
