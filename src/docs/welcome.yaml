@@ -1,0 +1,14 @@
+/ :
+  get:
+    summary: Returns a welcome message.
+    tags:
+      - Welcome
+    description: This is the root endpoint of the API which returns a simple greeting.
+    responses:
+      200:
+        description: A successful response.
+        content:
+          text/plain:
+            schema:
+              type: string
+              example: Hello, World!
